@@ -1,0 +1,263 @@
+{
+  "info": {
+    "_postman_id": "banco-general-conexion-bg",
+    "name": "Banco General - Conexión BG",
+    "description": "Banco General Conexión BG API and Express Backend Endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "bg_base_url",
+      "value": "https://conexionbg.bgeneral.cloud",
+      "type": "string"
+    },
+    {
+      "key": "client_id",
+      "value": "YOUR_CLIENT_ID",
+      "type": "string"
+    },
+    {
+      "key": "client_secret",
+      "value": "YOUR_CLIENT_SECRET",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "backend_url",
+      "value": "http://localhost:3001",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Direct BG - Authenticate",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-ibm-client-id",
+            "value": "{{client_id}}",
+            "type": "text"
+          },
+          {
+            "key": "x-ibm-client-secret",
+            "value": "{{client_secret}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{bg_base_url}}/autenticacion/autenticar",
+          "host": [
+            "{{bg_base_url}}"
+          ],
+          "path": [
+            "autenticacion",
+            "autenticar"
+          ]
+        },
+        "description": "Obtain access token from Banco General Conexión BG"
+      },
+      "response": []
+    },
+    {
+      "name": "2. Direct BG - Account Balance (H2H Saldos)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-ibm-client-id",
+            "value": "{{client_id}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{bg_base_url}}/h2h/saldos?numeroCuenta=0401976351601",
+          "host": [
+            "{{bg_base_url}}"
+          ],
+          "path": [
+            "h2h",
+            "saldos"
+          ],
+          "query": [
+            {
+              "key": "numeroCuenta",
+              "value": "0401976351601",
+              "description": "Normalized account number without dashes"
+            }
+          ]
+        },
+        "description": "Query account balance using Bearer token"
+      },
+      "response": []
+    },
+    {
+      "name": "3. Backend - Get Balance (0401976351601)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{backend_url}}/api/banco-general/balance/0401976351601",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "banco-general",
+            "balance",
+            "0401976351601"
+          ]
+        },
+        "description": "Express Backend balance query (handles auth, caching, and normalization)"
+      },
+      "response": []
+    },
+    {
+      "name": "4. Backend - Get Balance with Dashes (04-01-97-635160-1)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{backend_url}}/api/banco-general/balance/04-01-97-635160-1",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "banco-general",
+            "balance",
+            "04-01-97-635160-1"
+          ]
+        },
+        "description": "Express Backend automatically normalizes dashed account numbers"
+      },
+      "response": []
+    },
+    {
+      "name": "5. Backend - List Supported Accounts",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{backend_url}}/api/banco-general/accounts",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "banco-general",
+            "accounts"
+          ]
+        },
+        "description": "List all 5 supported Banco General accounts"
+      },
+      "response": []
+    },
+    {
+      "name": "6. Backend - Test Authentication",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{backend_url}}/api/banco-general/auth/test",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "banco-general",
+            "auth",
+            "test"
+          ]
+        },
+        "description": "Verifies credentials against Banco General"
+      },
+      "response": []
+    },
+    {
+      "name": "7. Direct BG - H2H Cuentas Referencias (0327000000600)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-ibm-client-id",
+            "value": "{{client_id}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{bg_base_url}}/h2h/cuentas/referencias?CodProducto=3&NumCuenta=0327000000600&Orden=D&CantidadRegistros=20&SaldoContable=0&FechaDesde=2026-02-01T12:00:00.100&FechaHasta=2026-02-28T23:50:00.100",
+          "host": [
+            "{{bg_base_url}}"
+          ],
+          "path": [
+            "h2h",
+            "cuentas",
+            "referencias"
+          ],
+          "query": [
+            { "key": "CodProducto", "value": "3" },
+            { "key": "NumCuenta", "value": "0327000000600" },
+            { "key": "Orden", "value": "D" },
+            { "key": "CantidadRegistros", "value": "20" },
+            { "key": "SaldoContable", "value": "0" },
+            { "key": "FechaDesde", "value": "2026-02-01T12:00:00.100" },
+            { "key": "FechaHasta", "value": "2026-02-28T23:50:00.100" }
+          ]
+        },
+        "description": "Queries live account transactions, references, and latest saldoCapital from Banco General"
+      },
+      "response": []
+    },
+    {
+      "name": "8. Backend - Get Movements & Referencias (0327000000600)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{backend_url}}/api/banco-general/referencias/0327000000600",
+          "host": [
+            "{{backend_url}}"
+          ],
+          "path": [
+            "api",
+            "banco-general",
+            "referencias",
+            "0327000000600"
+          ]
+        },
+        "description": "Express Backend endpoint that queries live transactions and balance for account 0327000000600"
+      },
+      "response": []
+    }
+  ]
+}
